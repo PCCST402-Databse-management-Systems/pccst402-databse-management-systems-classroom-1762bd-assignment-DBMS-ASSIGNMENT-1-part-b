@@ -1,0 +1,48 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: team 1
+      id: team-1
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: team 1
+        setup-command: ''
+        command: ashmila
+        input: |
+          For the relation schema below, write SQL expressions for the queries:
+          PATIENT (patient_id, patient_name, age, city)
+           DOCTOR (doctor_id, doctor_name, specialization)
+           APPOINTMENT (appointment_id, patient_id, doctor_id, appointment_date)
+           PRESCRIPTION (appointment_id, medicine_name, dosage)
+          Find the names of patients who are older than 50.
+
+
+          List the names and specializations of doctors who have appointments on ‘2025-01-10’.
+
+
+          Find the patient name, doctor name, and appointment date for all appointments made in the month of March 2025.
+
+
+          Find the doctors who have treated more than 10 unique patients.
+        expected-output: wertyq
+        comparison-method: exact
+        timeout: 10
+        max-score: 15
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEAM-1_RESULTS: "${{steps.team-1.outputs.result}}"
+      with:
+        runners: team-1
